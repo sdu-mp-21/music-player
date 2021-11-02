@@ -1,2 +1,2 @@
 
-# Flutter Getx - Music Player
+# Flutter Getx - Fetching API Data using Dio

@@ -1,32 +1,29 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class ApiRequest {
   final String url;
-  final Map<String, String> data;
+  final Map? data;
 
   ApiRequest({
     required this.url,
-    required this.data,
+    this.data,
   });
 
   Dio _dio() {
-    Dio dio = new Dio(BaseOptions());
-    dio.options.headers['content-Type'] = 'application/json';
-    dio.options.headers["Authorization"] =
-        "Bearer U__Pii_CeBCJFlH7EP8OaGiZ9KDF4e8rQZ15E29qhvOXIFJl9bOAUOdmJNJdC5H8";
-    return dio;
+    return Dio(BaseOptions());
   }
 
   void get({
-    required Function(dynamic data) onSuccess,
-    required Function(dynamic error) onError,
+    Function(dynamic data)? onSuccess,
+    Function(dynamic error)? onError,
   }) {
-    print("request");
-    _dio().get(this.url, queryParameters: this.data).then((res) {
-      print("ok");
-      onSuccess(res);
+    _dio()
+        .get(this.url, queryParameters: this.data as Map<String, dynamic>?)
+        .then((res) {
+      if (onSuccess != null) onSuccess(res.data);
     }).catchError((error) {
-      onError(error);
+      if (onError != null) onError(error);
     });
   }
 }
