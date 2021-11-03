@@ -34,6 +34,8 @@ dependencies:
   filesystem_picker: ^2.0.0
   spring: ^2.0.2
   shared_preferences: ^2.0.8
+  id3: ^1.0.1
+  flutter_media_metadata: ^0.1.1
 
 dev_dependencies:
   flutter_test:

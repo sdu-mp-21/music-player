@@ -2,26 +2,30 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 
 class AccountController extends GetxController {
-  RxList<String> checkedFolders = <String>[].obs;
-  RxList<String> foundFiles = <String>[].obs;
+  List<String> checkedFolders = [];
+  List<String> foundFiles = [];
 
   void updateFromStorage() async {
     final prefs = await SharedPreferences.getInstance();
     final list = prefs.getStringList("checked_folders");
-    print(list);
+    final temp = <String>[];
     if (list != null) {
-      checkedFolders = RxList<String>(list);
-
       for (var i = 0; i < list.length; i++) {
         List<FileSystemEntity> dir = Directory(list[i]).listSync();
         for (var k = 0; k < dir.length; k++) {
           if (dir[k].path.endsWith(".mp3")) {
-            if (!foundFiles.contains(dir[k].path)) foundFiles.add(dir[k].path);
+            var metadata = await MetadataRetriever.fromFile(File(dir[k].path));
+            print(metadata);
+
+            temp.add(dir[k].path);
           }
         }
       }
+      foundFiles = temp;
+      update();
     }
   }
 
@@ -33,12 +37,10 @@ class AccountController extends GetxController {
 
   getLength() {
     updateFromStorage();
-    update();
     return foundFiles.length;
   }
 
   getItem(index) {
-    updateFromStorage();
     return foundFiles[index];
   }
 }
