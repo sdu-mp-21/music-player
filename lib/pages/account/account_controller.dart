@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 
 class AccountController extends GetxController {
   List<String> checkedFolders = [];
@@ -17,9 +16,6 @@ class AccountController extends GetxController {
         List<FileSystemEntity> dir = Directory(list[i]).listSync();
         for (var k = 0; k < dir.length; k++) {
           if (dir[k].path.endsWith(".mp3")) {
-            var metadata = await MetadataRetriever.fromFile(File(dir[k].path));
-            print(metadata);
-
             temp.add(dir[k].path);
           }
         }
