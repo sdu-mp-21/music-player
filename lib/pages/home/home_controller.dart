@@ -24,7 +24,6 @@ class HomeController extends GetxController {
 
   @override
   void onInit() async {
-    dd.add(initialPath);
     final prefs = await SharedPreferences.getInstance();
     if (prefs.getStringList("checked_folders") != null) {
       checkedFolders = prefs.getStringList("checked_folders")!;
@@ -47,7 +46,6 @@ class HomeController extends GetxController {
 
   goBack() {
     if (dd.length > 1) {
-      dd.removeLast();
       openDirectory(dd.last);
     } else {
       openDirectory(initialPath);
@@ -64,7 +62,6 @@ class HomeController extends GetxController {
 
   addDirectory(path) {
     openDirectory(path);
-    dd.add(path);
   }
 
   openDirectory(path) {
