@@ -15,6 +15,14 @@ class AccountController extends GetxController {
     if (list != null) {
       for (var i = 0; i < list.length; i++) {
         List<FileSystemEntity> dir = Directory(list[i]).listSync();
+        for (var k = 0; k < dir.length; k++) {
+          if (dir[k].path.endsWith(".mp3")) {
+            var metadata = await MetadataRetriever.fromFile(File(dir[k].path));
+            print(metadata);
+
+            temp.add(dir[k].path);
+          }
+        }
       }
       foundFiles = temp;
       update();
