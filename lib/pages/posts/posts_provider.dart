@@ -7,8 +7,7 @@ class PostsProvider {
     Function(List<Post> posts)? onSuccess,
     Function(dynamic error)? onError,
   }) {
-    ApiRequest(url: 'https://jsonplaceholder.typicode.com/posts', data: null)
-        .get(
+    ApiRequest(url: 'https://jsonplaceholder.typicode.com/posts', data: {}).get(
       onSuccess: (data) {
         onSuccess!(
             (data as List).map((postJson) => Post.fromJson(postJson)).toList());

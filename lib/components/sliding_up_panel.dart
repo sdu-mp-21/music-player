@@ -148,11 +148,11 @@ class _SlidingUpPanelWidgetState extends State<SlidingUpPanelWidget>
 
   late AnimationController _animationController;
 
-  double upperBound = 1.17;
+  double upperBound = 1.0;
 
   double anchorFraction = 0.5;
 
-  double collapseFraction = 0.17;
+  double collapseFraction = 0.12;
 
   @override
   void initState() {

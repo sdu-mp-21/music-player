@@ -9,8 +9,9 @@ class LibraryProvider {
     Function(List<Post> posts)? onSuccess,
     Function(dynamic error)? onError,
   }) {
-    ApiRequest(url: 'api.genius.com/search', data: {
-      "q": data,
+    ApiRequest(url: 'https://theaudiodb.p.rapidapi.com/searchtrack.php', data: {
+      "s": data,
+      "t": data,
     }).get(
       onSuccess: (data) {
         print(data);

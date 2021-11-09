@@ -3,25 +3,27 @@ import 'package:flutter/foundation.dart';
 
 class ApiRequest {
   final String url;
-  final Map? data;
+  final Map<String, String> data;
 
   ApiRequest({
     required this.url,
-    this.data,
+    required this.data,
   });
 
   Dio _dio() {
-    return Dio(BaseOptions());
+    Dio dio = new Dio(BaseOptions());
+    dio.options.headers['x-rapidapi-host'] = 'theaudiodb.p.rapidapi.com';
+    dio.options.headers["x-rapidapi-key"] =
+        "06f5b3d01bmsh25b36ed6c80e486p1d21f0jsn6da9cc97ac3c";
+    return dio;
   }
 
   void get({
     Function(dynamic data)? onSuccess,
     Function(dynamic error)? onError,
   }) {
-    _dio()
-        .get(this.url, queryParameters: this.data as Map<String, dynamic>?)
-        .then((res) {
-      if (onSuccess != null) onSuccess(res.data);
+    _dio().get(this.url, queryParameters: this.data).then((res) {
+      print(res);
     }).catchError((error) {
       if (onError != null) onError(error);
     });

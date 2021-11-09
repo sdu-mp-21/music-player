@@ -1,27 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getx_app/pages/account/account_page.dart';
-import 'package:getx_app/pages/home/home_page.dart';
+import 'package:getx_app/pages/account/library_controller.dart';
+import 'package:getx_app/pages/account/library_page.dart';
+import 'package:getx_app/pages/dashboard/components/music_player.dart';
+import 'package:getx_app/pages/home/settings_page.dart';
 import 'package:getx_app/components/bottom_navigation_bar.dart';
-
+import 'package:getx_app/globals/player_state.dart';
 import 'dashboard_controller.dart';
 
 class DashboardPage extends StatelessWidget {
   IndexedStack getStack(tabIndex) {
     return IndexedStack(
       index: tabIndex,
-      children: [
-        AccountPage(),
-        HomePage(),
-      ],
+      children: [LibraryPage(), SettingsPage()],
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<DashboardController>(builder: (controller) {
-      return Scaffold(
+      return MusicPlayer(
           body: Container(child: this.getStack(controller.tabIndex)),
           bottomNavigationBar: CustomBottomNavigationBar(
             onTap: controller.changeTabIndex,

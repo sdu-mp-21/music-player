@@ -5,11 +5,12 @@ ThemeData lightTheme = ThemeData(
   scaffoldBackgroundColor: Colors.white,
   backgroundColor: Colors.white,
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
-    backgroundColor: Colors.black12,
+    backgroundColor: Colors.white,
     unselectedItemColor: Colors.black,
     selectedItemColor: Colors.black,
     elevation: 0,
   ),
+  bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.black12),
   highlightColor: Colors.transparent,
   splashColor: Colors.black12,
   appBarTheme: AppBarTheme(
