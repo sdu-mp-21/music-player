@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getx_app/components/bottom_navigation_bar.dart';
 import 'package:getx_app/pages/home/settings_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,11 +12,8 @@ class FolderSelector extends StatelessWidget {
       return ListTile(
         title: Text("Select folder to search"),
         onTap: () {
-          showModalBottomSheet<void>(
+          showCupertinoModalPopup<void>(
             context: context,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
             builder: (BuildContext context) {
               return GetBuilder<SettingsController>(builder: (controller) {
                 return WillPopScope(
@@ -26,59 +24,86 @@ class FolderSelector extends StatelessWidget {
                       return false;
                     },
                     child: Scaffold(
-                        appBar: AppBar(
-                            title: Text(controller.dd.last),
-                            actions: [
-                              Container(
-                                  padding: EdgeInsets.only(right: 25),
-                                  child: IconButton(
-                                      color: Colors.green,
-                                      onPressed: () async {
-                                        Navigator.pop(context);
-                                        // final prefs = await SharedPreferences
-                                        //     .getInstance();
-                                        // prefs.setStringList("checked_folders",
-                                        //     controller.checkedFolders);
-                                      },
-                                      icon: Icon(CupertinoIcons.checkmark_alt)))
-                            ],
-                            leading: IconButton(
-                                icon: Icon(
-                                  Icons.arrow_back_sharp,
-                                  color: Colors.grey,
+                      appBar: AppBar(
+                        title: Text(controller.dd.last),
+                      ),
+                      body: Container(
+                          child: ListView.builder(
+                              padding: EdgeInsets.all(20),
+                              itemCount: controller.items.length,
+                              itemBuilder: (context, index) {
+                                final path = controller.items[index].path;
+                                return GestureDetector(
+                                  onTap: () => controller.addDirectory(path),
+                                  child: ListTile(
+                                      leading: FutureBuilder(
+                                        future: controller.getIcon(path),
+                                        initialData: CupertinoIcons.placemark,
+                                        builder: (context,
+                                                AsyncSnapshot<IconData> icon) =>
+                                            Icon(icon.data),
+                                      ),
+                                      title: Text(
+                                        path.replaceAll(
+                                            controller.initialPath, ""),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      trailing: FutureBuilder(
+                                        future: controller.showCheckBox(path),
+                                        initialData: false,
+                                        builder: (context,
+                                            AsyncSnapshot<bool> show) {
+                                          return show.data!
+                                              ? Checkbox(
+                                                  value: controller
+                                                      .checkedFolders
+                                                      .contains(path),
+                                                  onChanged: (changed) {
+                                                    controller
+                                                        .toggleCheckFolder(
+                                                            changed!, path);
+                                                  },
+                                                )
+                                              : Text("");
+                                        },
+                                      )),
+                                );
+                              })),
+                      bottomNavigationBar: Container(
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: Offset(0, 3),
                                 ),
-                                onPressed: controller.goBack)),
-                        body: Container(
-                            child: ListView.builder(
-                                padding: EdgeInsets.all(20),
-                                itemCount: controller.items.length,
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      controller.openDirectory(
-                                          controller.items[index].path);
-                                    },
-                                    child: ListTile(
-                                        leading: Icon(CupertinoIcons.folder),
-                                        title: Text(
-                                          controller.items[index].path
-                                              .replaceAll(
-                                                  controller.initialPath, ""),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        trailing: Checkbox(
-                                          value: controller.checkedFolders
-                                              .contains(
-                                                  controller.items[index].path),
-                                          onChanged: (changed) {
-                                            controller.toggleCheckFolder(
-                                                changed!,
-                                                controller.items[index].path);
-                                          },
-                                        )),
-                                  );
-                                }))));
+                              ],
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20))),
+                          child: CustomBottomNavigationBar(
+                            onTap: (i) {
+                              if (i == 0) {
+                                if (controller.dd.length == 1) {
+                                  Navigator.pop(context);
+                                }
+                                controller.goBack();
+                              } else if (i == 1) {
+                                Navigator.pop(context);
+                              }
+                            },
+                            items: [
+                              BottomNavigationBarItem(
+                                icon: Icon(CupertinoIcons.chevron_left),
+                              ),
+                              BottomNavigationBarItem(
+                                icon: Icon(CupertinoIcons.chevron_down),
+                              ),
+                            ],
+                          )),
+                    ));
               });
             },
           );

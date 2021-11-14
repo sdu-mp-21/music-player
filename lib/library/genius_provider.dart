@@ -29,13 +29,6 @@ class GeniusProvider {
 
   Map<String, dynamic> fromNullData(String query) {
     List<String> song = query.split(" - ");
-    if (song.length == 1) {
-      return getSchema(
-          'unknown',
-          "https://cbdworship.com/assets/images/album_art/placeholder.png",
-          song[0],
-          "https://cbdworship.com/assets/images/album_art/placeholder.png");
-    }
     return getSchema(
         song[0],
         "https://cbdworship.com/assets/images/album_art/placeholder.png",
@@ -44,7 +37,6 @@ class GeniusProvider {
   }
 
   GeniusProvider(String query, Function cb) {
-    query = query.replaceAll("remix", "").replaceAll("HD", "");
     ApiRequest(url: "https://api.genius.com/search/", data: {'q': query}).get(
         onSuccess: (r) {
       GeniusAPIResponse response = GeniusAPIResponse(r.data);

@@ -612,15 +612,17 @@ class _TileIcon extends StatelessWidget {
       defaultIconTheme.merge(selectedIconTheme),
       animation.value,
     );
-
-    return Align(
-      alignment: Alignment.topCenter,
-      heightFactor: 1.0,
-      child: IconTheme(
-        data: iconThemeData,
-        child: selected ? item.activeIcon : item.icon,
-      ),
-    );
+    if (item.label == null)
+      return Align(
+        alignment: Alignment.topCenter,
+        heightFactor: 1.0,
+        child: IconTheme(
+          data: iconThemeData,
+          child: selected ? item.activeIcon : item.icon,
+        ),
+      );
+    else
+      return Text(item.label!);
   }
 }
 
@@ -661,6 +663,7 @@ class _Label extends StatelessWidget {
       selectedLabelStyle,
       animation.value,
     )!;
+
     Widget text = DefaultTextStyle.merge(
       style: customStyle.copyWith(
         fontSize: selectedFontSize,

@@ -4,6 +4,7 @@ ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   scaffoldBackgroundColor: Colors.black,
   backgroundColor: Colors.black,
+  iconTheme: IconThemeData(color: Colors.white),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     backgroundColor: Colors.white12,
     unselectedItemColor: Colors.white,

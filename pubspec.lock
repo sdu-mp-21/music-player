@@ -8,6 +8,41 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.2"
+  audio_service:
+    dependency: "direct main"
+    description:
+      name: audio_service
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.18.1"
+  audio_service_platform_interface:
+    dependency: transitive
+    description:
+      name: audio_service_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
+  audio_service_web:
+    dependency: transitive
+    description:
+      name: audio_service_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
+  audio_session:
+    dependency: transitive
+    description:
+      name: audio_session
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.6+1"
+  audioplayers:
+    dependency: "direct main"
+    description:
+      name: audioplayers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.20.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -43,6 +78,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
+  crypto:
+    dependency: transitive
+    description:
+      name: crypto
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -78,32 +120,18 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.1.2"
-  filesystem_picker:
-    dependency: "direct main"
-    description:
-      name: filesystem_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_lints:
+  flutter_cache_manager:
     dependency: transitive
     description:
-      name: flutter_lints
+      name: flutter_cache_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.4"
-  flutter_media_metadata:
-    dependency: "direct main"
-    description:
-      name: flutter_media_metadata
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.1"
+    version: "3.1.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -121,6 +149,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.3.8"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.13.4"
   http_parser:
     dependency: transitive
     description:
@@ -128,13 +163,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
-  id3:
-    dependency: "direct main"
-    description:
-      name: id3
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   js:
     dependency: transitive
     description:
@@ -142,13 +170,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
-  lints:
-    dependency: transitive
+  just_audio:
+    dependency: "direct main"
     description:
-      name: lints
+      name: just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "0.9.17"
+  just_audio_platform_interface:
+    dependency: transitive
+    description:
+      name: just_audio_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.0"
+  just_audio_web:
+    dependency: transitive
+    description:
+      name: just_audio_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.2"
   matcher:
     dependency: transitive
     description:
@@ -205,6 +247,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.3"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.11.1"
   permission_handler:
     dependency: "direct main"
     description:
@@ -240,6 +289,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.4"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.27.2"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -282,25 +338,11 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.2"
-  simple_animations:
-    dependency: transitive
-    description:
-      name: simple_animations
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.2.0"
   sky_engine:
     dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.99"
-  sliding_sheet:
-    dependency: "direct main"
-    description:
-      name: sliding_sheet
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.2"
   source_span:
     dependency: transitive
     description:
@@ -308,13 +350,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.1"
-  spring:
-    dependency: "direct main"
+  sqflite:
+    dependency: transitive
     description:
-      name: spring
+      name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.0+4"
+  sqflite_common:
+    dependency: transitive
+    description:
+      name: sqflite_common
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1+1"
   stack_trace:
     dependency: transitive
     description:
@@ -336,20 +385,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
-  supercharged:
+  synchronized:
     dependency: transitive
     description:
-      name: supercharged
+      name: synchronized
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
-  supercharged_dart:
-    dependency: transitive
-    description:
-      name: supercharged_dart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.1"
+    version: "3.0.0"
   term_glyph:
     dependency: transitive
     description:
@@ -363,7 +405,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.3"
+    version: "0.4.7"
   typed_data:
     dependency: transitive
     description:
@@ -371,13 +413,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
-  universal_platform:
+  uuid:
     dependency: transitive
     description:
-      name: universal_platform
+      name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0+1"
+    version: "3.0.5"
   vector_math:
     dependency: transitive
     description:

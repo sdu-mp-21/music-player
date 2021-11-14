@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 class ApiRequest {
   final String url;
@@ -12,20 +11,22 @@ class ApiRequest {
 
   Dio _dio() {
     Dio dio = new Dio(BaseOptions());
-    dio.options.headers['x-rapidapi-host'] = 'theaudiodb.p.rapidapi.com';
-    dio.options.headers["x-rapidapi-key"] =
-        "06f5b3d01bmsh25b36ed6c80e486p1d21f0jsn6da9cc97ac3c";
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers["Authorization"] =
+        "Bearer U__Pii_CeBCJFlH7EP8OaGiZ9KDF4e8rQZ15E29qhvOXIFJl9bOAUOdmJNJdC5H8";
     return dio;
   }
 
   void get({
-    Function(dynamic data)? onSuccess,
-    Function(dynamic error)? onError,
+    required Function(dynamic data) onSuccess,
+    required Function(dynamic error) onError,
   }) {
+    print("request");
     _dio().get(this.url, queryParameters: this.data).then((res) {
-      print(res);
+      print("ok");
+      onSuccess(res);
     }).catchError((error) {
-      if (onError != null) onError(error);
+      onError(error);
     });
   }
 }

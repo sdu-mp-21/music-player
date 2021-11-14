@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getx_app/globals/settings.dart';
 import 'settings_controller.dart';
 
 class SettingsPage extends StatelessWidget {

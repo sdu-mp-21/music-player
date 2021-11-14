@@ -6,7 +6,7 @@ import 'package:getx_app/pages/account/library_page.dart';
 import 'package:getx_app/pages/dashboard/components/music_player.dart';
 import 'package:getx_app/pages/home/settings_page.dart';
 import 'package:getx_app/components/bottom_navigation_bar.dart';
-import 'package:getx_app/globals/player_state.dart';
+import 'package:getx_app/audio_service/media_state.dart';
 import 'dashboard_controller.dart';
 
 class DashboardPage extends StatelessWidget {

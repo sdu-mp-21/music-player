@@ -4,6 +4,7 @@ ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   scaffoldBackgroundColor: Colors.white,
   backgroundColor: Colors.white,
+  iconTheme: IconThemeData(color: Colors.black),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     backgroundColor: Colors.white,
     unselectedItemColor: Colors.black,
@@ -16,6 +17,7 @@ ThemeData lightTheme = ThemeData(
   appBarTheme: AppBarTheme(
     color: Colors.white,
     elevation: 0,
+    iconTheme: IconThemeData(color: Colors.black),
     toolbarTextStyle: TextTheme(
       headline6: TextStyle(
         color: Colors.black,
