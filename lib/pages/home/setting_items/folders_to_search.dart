@@ -44,8 +44,16 @@ class FolderSelector extends StatelessWidget {
                                             Icon(icon.data),
                                       ),
                                       title: Text(
-                                        path.replaceAll(
-                                            controller.initialPath, ""),
+                                        path
+                                            .replaceAll(
+                                                controller.initialPath, "")
+                                            .replaceAll(
+                                                controller
+                                                    .items[index > 0
+                                                        ? index - 1
+                                                        : 0]
+                                                    .path,
+                                                ""),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),

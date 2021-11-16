@@ -1,5 +1,5 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:getx_app/globals/settings.dart';
+import 'package:getx_app/globals/cached_music.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/src/transformers/where_type.dart';
 import 'dart:async';
@@ -192,47 +192,6 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
     await _player.setAudioSource(_playlist);
   }
 
-  Future<void> setPlay() async {
-    // await updateQueue(MediaLibrary().updateLib()[MediaLibrary.albumsRootId]!);
-    // // For Android 11, record the most recent item so it can be resumed.
-    // mediaItem
-    //     .whereType<MediaItem>()
-    //     .listen((item) => _recentSubject.add([item]));
-    // // Broadcast media item changes.
-    // Rx.combineLatest4<int?, List<MediaItem>, bool, List<int>?, MediaItem?>(
-    //     _player.currentIndexStream,
-    //     queue,
-    //     _player.shuffleModeEnabledStream,
-    //     _player.shuffleIndicesStream,
-    //     (index, queue, shuffleModeEnabled, shuffleIndices) {
-    //   final queueIndex =
-    //       getQueueIndex(index, shuffleModeEnabled, shuffleIndices);
-    //   return (queueIndex != null && queueIndex < queue.length)
-    //       ? queue[queueIndex]
-    //       : null;
-    // }).whereType<MediaItem>().distinct().listen(mediaItem.add);
-    // // Propagate all events from the audio player to AudioService clients.
-    // _player.playbackEventStream.listen(_broadcastState);
-    // _player.shuffleModeEnabledStream
-    //     .listen((enabled) => _broadcastState(_player.playbackEvent));
-    // // In this example, the service stops when reaching the end.
-    // _player.processingStateStream.listen((state) {
-    //   if (state == ProcessingState.completed) {
-    //     stop();
-    //     _player.seek(Duration.zero, index: 0);
-    //   }
-    // });
-
-    // // Broadcast the current queue.
-    // _effectiveSequence
-    //     .map((sequence) =>
-    //         sequence.map((source) => _mediaItemExpando[source]!).toList())
-    //     .pipe(queue);
-    // // Load the playlist.
-    // _playlist.addAll(queue.value.map(_itemToSource).toList());
-    // await _player.setAudioSource(_playlist);
-  }
-
   AudioSource _itemToSource(MediaItem mediaItem) {
     final audioSource = AudioSource.uri(Uri.parse(mediaItem.id));
     _mediaItemExpando[audioSource] = mediaItem;
@@ -387,7 +346,7 @@ class MediaLibrary {
         playable: false,
       ),
     ],
-    albumsRootId: Settings.cachedSongs
+    albumsRootId: CachedSongs.cachedSongs
         .map((element) => MediaItem(
             id: element["originalPath"],
             album: element["songName"],
@@ -398,7 +357,7 @@ class MediaLibrary {
         .toList(),
   };
   updateLib() {
-    final playlist = Settings.cachedSongs
+    final playlist = CachedSongs.cachedSongs
         .map((element) => MediaItem(
             id: element["originalPath"],
             album: element["songName"],

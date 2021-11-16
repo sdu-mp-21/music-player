@@ -33,6 +33,7 @@ dependencies:
   audioplayers: ^0.20.1
   audio_service: ^0.18.1
   just_audio: ^0.9.17
+  audiotagger: ^2.2.1
 
 dev_dependencies:
   flutter_test:

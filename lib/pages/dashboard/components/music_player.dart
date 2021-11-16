@@ -10,8 +10,10 @@ import 'package:getx_app/audio_service/audio_player_handler.dart';
 import 'package:getx_app/audio_service/media_state.dart';
 import 'package:getx_app/pages/account/library_controller.dart';
 import 'package:getx_app/components/sliding_up_panel.dart';
+import 'package:getx_app/pages/dashboard/components/music_control.dart';
 import 'package:getx_app/pages/dashboard/dashboard_page.dart';
 import 'package:rxdart/rxdart.dart';
+import 'music_control.dart';
 
 class MusicPlayer extends StatelessWidget {
   Widget bottomNavigationBar;
@@ -57,167 +59,26 @@ class MusicPlayer extends StatelessWidget {
                         ],
                       ),
                       child: Stack(children: [
-                        Positioned(
-                          width: MediaQuery.of(context).size.width,
-                          height: 30.0,
-                          top: 0,
-                          child: AnimatedOpacity(
-                              opacity: controller.bottomNavOpacity,
-                              duration: Duration(milliseconds: 200),
-                              child: ListTile(
-                                title: Text(controller.nowPlaying["songName"]),
-                                subtitle:
-                                    Text(controller.nowPlaying["artistName"]),
-                                leading: MiniPlayBack(),
-                              )),
-                        ),
-                        Positioned(
-                            width: MediaQuery.of(context).size.width,
-                            height: 400,
-                            top: 0,
-                            child: PageView(
+                        AnimatedOpacity(
+                            opacity: controller.bottomNavOpacity,
+                            duration: Duration(milliseconds: 200),
+                            child: ListTile(
+                              title: Text(controller.nowPlaying["songName"]),
+                              subtitle:
+                                  Text(controller.nowPlaying["artistName"]),
+                              leading: MiniPlayBack(),
+                            )),
+                        SlideTransition(
+                            position: controller.offsetAnimation,
+                            child: Container(
+                                child: PageView(
                               controller: controller.pageController,
+                              onPageChanged: (s) {
+                                controller.update();
+                              },
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: StreamBuilder<MediaItem?>(
-                                        stream: audioHandler.mediaItem
-                                            .asBroadcastStream(),
-                                        builder: (context, snapshot) {
-                                          final mediaItem = snapshot.data;
-                                          if (mediaItem == null)
-                                            return const SizedBox();
-                                          return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              if (mediaItem.artUri != null)
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Center(
-                                                      child: Image.network(
-                                                          '${mediaItem.artUri!}'),
-                                                    ),
-                                                  ),
-                                                ),
-                                              Text(mediaItem.album ?? '',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline6),
-                                              Text(mediaItem.title),
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    ControlButtons(audioHandler),
-                                    StreamBuilder<PositionData>(
-                                      stream: _positionDataStream
-                                          .asBroadcastStream(),
-                                      builder: (context, snapshot) {
-                                        final positionData = snapshot.data ??
-                                            PositionData(Duration.zero,
-                                                Duration.zero, Duration.zero);
-                                        return SeekBar(
-                                          duration: positionData.duration,
-                                          position: positionData.position,
-                                          onChangeEnd: (newPosition) {
-                                            audioHandler.seek(newPosition);
-                                          },
-                                        );
-                                      },
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    // Repeat/shuffle controls
-                                    Row(
-                                      children: [
-                                        StreamBuilder<AudioServiceRepeatMode>(
-                                          stream: audioHandler.playbackState
-                                              .asBroadcastStream()
-                                              .map((state) => state.repeatMode)
-                                              .distinct(),
-                                          builder: (context, snapshot) {
-                                            final repeatMode = snapshot.data ??
-                                                AudioServiceRepeatMode.none;
-                                            const icons = [
-                                              Icon(Icons.repeat,
-                                                  color: Colors.grey),
-                                              Icon(Icons.repeat,
-                                                  color: Colors.orange),
-                                              Icon(Icons.repeat_one,
-                                                  color: Colors.orange),
-                                            ];
-                                            const cycleModes = [
-                                              AudioServiceRepeatMode.none,
-                                              AudioServiceRepeatMode.all,
-                                              AudioServiceRepeatMode.one,
-                                            ];
-                                            final index =
-                                                cycleModes.indexOf(repeatMode);
-                                            return IconButton(
-                                              icon: icons[index],
-                                              onPressed: () {
-                                                audioHandler.setRepeatMode(
-                                                    cycleModes[
-                                                        (cycleModes.indexOf(
-                                                                    repeatMode) +
-                                                                1) %
-                                                            cycleModes.length]);
-                                              },
-                                            );
-                                          },
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            "Playlist",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline6,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                        StreamBuilder<bool>(
-                                          stream: audioHandler.playbackState
-                                              .asBroadcastStream()
-                                              .map((state) =>
-                                                  state.shuffleMode ==
-                                                  AudioServiceShuffleMode.all)
-                                              .distinct(),
-                                          builder: (context, snapshot) {
-                                            final shuffleModeEnabled =
-                                                snapshot.data ?? false;
-                                            return IconButton(
-                                              icon: shuffleModeEnabled
-                                                  ? const Icon(Icons.shuffle,
-                                                      color: Colors.orange)
-                                                  : const Icon(Icons.shuffle,
-                                                      color: Colors.grey),
-                                              onPressed: () async {
-                                                final enable =
-                                                    !shuffleModeEnabled;
-                                                await audioHandler
-                                                    .setShuffleMode(enable
-                                                        ? AudioServiceShuffleMode
-                                                            .all
-                                                        : AudioServiceShuffleMode
-                                                            .none);
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    // Playlist
-                                  ],
-                                ),
+                                MusicControl(),
                                 Container(
-                                  height: 140.0,
                                   child: StreamBuilder<QueueState>(
                                     stream: audioHandler.queueState
                                         .asBroadcastStream(),
@@ -235,10 +96,12 @@ class MusicPlayer extends StatelessWidget {
                                         children: [
                                           for (var i = 0; i < queue.length; i++)
                                             ListTile(
-                                              key: Key(queue[i].id),
+                                              key: Key(i.toString()),
                                               title: Text(queue[i].title),
-                                              onTap: () => audioHandler
-                                                  .skipToQueueItem(i),
+                                              onTap: () {
+                                                audioHandler.skipToQueueItem(i);
+                                                controller.update();
+                                              },
                                             ),
                                         ],
                                       );
@@ -246,7 +109,7 @@ class MusicPlayer extends StatelessWidget {
                                   ),
                                 ),
                               ],
-                            ))
+                            )))
                       ])),
                   controlHeight: 30.0,
                   panelController: controller.panelController,
@@ -264,8 +127,10 @@ class MusicPlayer extends StatelessWidget {
                   },
                   onStatusChanged: (status) {
                     if (status == SlidingUpPanelStatus.expanded) {
+                      controller.offsetController.animateTo(0.0);
                       controller.setOpacity(0.0);
                     } else {
+                      controller.offsetController.animateTo(0.2);
                       controller.setOpacity(1.0);
                     }
                   },

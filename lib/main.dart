@@ -11,6 +11,8 @@ import 'package:getx_app/globals/settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Settings.init();
+
   print("INIT");
 
   audioHandler = await AudioService.init(
@@ -20,8 +22,7 @@ void main() async {
       androidNotificationChannelName: 'Audio playback',
     ),
   );
-  audioHandler.setPlay();
-  Settings.init();
+
   runApp(MyApp());
 }
 

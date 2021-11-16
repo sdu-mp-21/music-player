@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getx_app/globals/cached_music.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:collection';
@@ -9,7 +10,7 @@ import 'setting_items/index.dart' as SettingItems;
 import 'package:getx_app/globals/settings.dart';
 
 class SettingsController extends GetxController {
-  final checkedFolders = Settings.checkedFolders;
+  final checkedFolders = CachedSongs.checkedFolders;
   List<FileSystemEntity> items = [];
   List<StatelessWidget> settingsItems = [];
   DoubleLinkedQueue dd = new DoubleLinkedQueue();

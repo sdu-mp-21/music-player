@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:getx_app/audio_service/components/seek_bar.dart';
@@ -20,7 +21,7 @@ class ControlButtons extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
-          icon: const Icon(Icons.volume_up),
+          icon: const Icon(CupertinoIcons.volume_up),
           onPressed: () {
             showSliderDialog(
               context: context,
@@ -61,13 +62,13 @@ class ControlButtons extends StatelessWidget {
               );
             } else if (playing != true) {
               return IconButton(
-                icon: const Icon(Icons.play_arrow),
+                icon: const Icon(CupertinoIcons.play_arrow),
                 iconSize: 64.0,
                 onPressed: audioHandler.play,
               );
             } else {
               return IconButton(
-                icon: const Icon(Icons.pause),
+                icon: const Icon(CupertinoIcons.pause),
                 iconSize: 64.0,
                 onPressed: audioHandler.pause,
               );

@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:getx_app/audio_service/audio_player_handler.dart';
 import 'package:getx_app/audio_service/media_state.dart';
+import 'package:getx_app/globals/cached_music.dart';
 import 'package:getx_app/pages/dashboard/components/music_player.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,8 +25,18 @@ class LibraryController extends GetxController
   PageController pageController = PageController(initialPage: 0);
   SlidingUpPanelController panelController = SlidingUpPanelController();
 
-  final checkedFolders = Settings.checkedFolders;
-  final foundFiles = Settings.cachedSongs;
+  late final AnimationController offsetController = AnimationController(
+      duration: const Duration(milliseconds: 400), vsync: this, value: 0.3);
+  late final Animation<Offset> offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(0.0, 1.5),
+  ).animate(CurvedAnimation(
+    parent: offsetController,
+    curve: Curves.easeIn,
+  ));
+
+  final checkedFolders = CachedSongs.checkedFolders;
+  final foundFiles = CachedSongs.cachedSongs;
 
   double bottomNavOpacity = 1.0;
 
@@ -45,13 +56,12 @@ class LibraryController extends GetxController
         pageController.jumpToPage(0);
       } else {}
     });
+
     super.onInit();
   }
 
-  play(path) async {}
-
   loading() {
-    return Settings.isLoading;
+    return false;
   }
 
   getLength() {

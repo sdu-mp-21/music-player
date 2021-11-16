@@ -18,8 +18,7 @@ class CachedSongs {
 
   Future<void> _addSong(String path) async {
     if (path.contains(".mp3")) {
-      final fileName =
-          basename(path).replaceAll('.mp3', '').replaceAll("y2mate.com -", "");
+      final fileName = basename(path).replaceAll('.mp3', '');
       GeniusProvider(fileName, (Map<String, dynamic> song) async {
         final duration = await AudioPlayer().setUrl(path);
         song.addAll({"originalPath": path, "duration": duration!.inSeconds});
@@ -38,28 +37,9 @@ class CachedSongs {
     if (songs != null)
       cachedSongs = RxList<Map<String, dynamic>>(
           songs.map((e) => json.decode(e) as Map<String, dynamic>).toList());
-    if (folders != null) {
-      checkedFolders = RxList<String>(folders);
-      checkedFolders.forEach((element) {
-        _watchDir(element);
-      });
-    }
+    if (folders != null) checkedFolders = RxList<String>(folders);
 
     _createListeners();
-  }
-
-  _watchDir(element) {
-    if (!watchers.contains(element)) {
-      watchers.add(element);
-      Directory(element).watch().listen((event) {
-        if (event.type == FileSystemEvent.delete) {
-          cachedSongs
-              .removeWhere((element) => element["originalPath"] == event.path);
-        } else if (event.type == FileSystemEvent.create) {
-          _addSong(event.path);
-        }
-      });
-    }
   }
 
   _createListeners() async {
@@ -69,15 +49,23 @@ class CachedSongs {
         cachedSongs.map((element) => json.encode(element)).toList()));
 
     checkedFolders.listen((folders) async {
-      cachedSongs.removeRange(0, cachedSongs.length);
       prefs.setStringList("checked_folders", folders);
-      print(folders);
       folders.forEach((element) {
         final subDir = Directory(element).listSync();
 
         subDir.forEach((subElement) => _addSong(subElement.path));
 
-        _watchDir(element);
+        if (!watchers.contains(element)) {
+          watchers.add(element);
+          Directory(element).watch().listen((event) {
+            if (event.type == FileSystemEvent.delete) {
+              cachedSongs.removeWhere(
+                  (element) => element["originalPath"] == event.path);
+            } else if (event.type == FileSystemEvent.create) {
+              _addSong(event.path);
+            }
+          });
+        }
       });
     });
   }

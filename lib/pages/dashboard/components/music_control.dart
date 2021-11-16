@@ -1,16 +1,11 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:getx_app/audio_service/audio_player_handler.dart';
 import 'package:getx_app/audio_service/components/control_buttons.dart';
 import 'package:getx_app/audio_service/components/seek_bar.dart';
 import 'package:getx_app/audio_service/media_state.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MusicControl extends StatelessWidget {
-  final AudioPlayerHandlerImpl audioHandler;
-
-  MusicControl(this.audioHandler);
-
   Stream<Duration> get _bufferedPositionStream => audioHandler.playbackState
       .map((state) => state.bufferedPosition)
       .distinct();
@@ -32,7 +27,7 @@ class MusicControl extends StatelessWidget {
       children: [
         Expanded(
           child: StreamBuilder<MediaItem?>(
-            stream: audioHandler.mediaItem,
+            stream: audioHandler.mediaItem.asBroadcastStream(),
             builder: (context, snapshot) {
               final mediaItem = snapshot.data;
               if (mediaItem == null) return const SizedBox();
@@ -45,22 +40,15 @@ class MusicControl extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.network('${mediaItem.artUri!}')),
+                        child: Image.network('${mediaItem.artUri!}'),
                       ),
                     ),
                   Text(mediaItem.album ?? '',
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.headline6),
-                  Container(
-                      padding: EdgeInsets.all(10),
-                      child: Text(mediaItem.title)),
-                  ControlButtons(this.audioHandler),
+                  Text(mediaItem.title),
+                  ControlButtons(audioHandler),
                   StreamBuilder<PositionData>(
-                    stream: _positionDataStream,
+                    stream: _positionDataStream.asBroadcastStream(),
                     builder: (context, snapshot) {
                       final positionData = snapshot.data ??
                           PositionData(
@@ -78,6 +66,7 @@ class MusicControl extends StatelessWidget {
                     children: [
                       StreamBuilder<AudioServiceRepeatMode>(
                         stream: audioHandler.playbackState
+                            .asBroadcastStream()
                             .map((state) => state.repeatMode)
                             .distinct(),
                         builder: (context, snapshot) {
@@ -106,6 +95,7 @@ class MusicControl extends StatelessWidget {
                       ),
                       StreamBuilder<bool>(
                         stream: audioHandler.playbackState
+                            .asBroadcastStream()
                             .map((state) =>
                                 state.shuffleMode ==
                                 AudioServiceShuffleMode.all)
