@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'dart:collection';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'setting_items/index.dart' as SettingItems;
+import 'package:path/path.dart' as p;
 import 'package:getx_app/globals/settings.dart';
 
 class SettingsController extends GetxController {
@@ -15,6 +16,16 @@ class SettingsController extends GetxController {
   List<StatelessWidget> settingsItems = [];
   DoubleLinkedQueue dd = new DoubleLinkedQueue();
   String initialPath = Platform.isIOS ? './' : '/storage/emulated/0';
+
+  int _compare(FileSystemEntity map1, FileSystemEntity map2) {
+    if (FileSystemEntity.isDirectorySync(map2.path)) {
+      return 1;
+    } else if (!FileSystemEntity.isDirectorySync(map2.path)) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
 
   void toggleCheckFolder(bool willCheck, String path) {
     if (willCheck) {
@@ -34,6 +45,7 @@ class SettingsController extends GetxController {
 
     Directory dir = Directory(initialPath);
     items.addAll(dir.listSync());
+    items.sort(_compare);
 
     {
       settingsItems.add(SettingItems.FolderSelector());
@@ -64,7 +76,6 @@ class SettingsController extends GetxController {
     if (FileSystemEntity.isDirectorySync(path)) {
       openDirectory(path);
       dd.add(path);
-      print(dd);
     }
   }
 
@@ -73,6 +84,7 @@ class SettingsController extends GetxController {
     try {
       items.clear();
       items.addAll(dir.listSync());
+      items.sort(_compare);
     } catch (e) {
       print(e);
     }
@@ -81,6 +93,9 @@ class SettingsController extends GetxController {
   }
 
   Future<IconData> getIcon(String path) async {
+    if (p.extension(path) == ".app") {
+      return CupertinoIcons.app_badge_fill;
+    }
     var type = await FileSystemEntity.type(path);
     if (type == FileSystemEntityType.directory) {
       return CupertinoIcons.folder;

@@ -9,6 +9,7 @@ class QueueList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(top: kBottomNavigationBarHeight),
       child: StreamBuilder<QueueState>(
         stream: audioHandler.queueState,
         builder: (context, snapshot) {
@@ -24,8 +25,11 @@ class QueueList extends StatelessWidget {
                 Container(
                     key: Key(i.toString()),
                     child: SongItem(
+                        onTap: () {
+                          audioHandler.skipToQueueItem(i);
+                        },
                         index: i,
-                        title: queue[i].title,
+                        title: queue[i].album!,
                         artUri: queue[i].artUri!,
                         artist: queue[i].artist!))
             ],

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,7 +11,18 @@ import 'routes/app_routes.dart';
 import 'themes/app_theme.dart';
 import 'package:getx_app/globals/settings.dart';
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 void main() async {
+  HttpOverrides.global = new MyHttpOverrides();
+
   WidgetsFlutterBinding.ensureInitialized();
   Settings.init();
 

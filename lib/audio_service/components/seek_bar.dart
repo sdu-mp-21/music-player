@@ -56,63 +56,78 @@ class _SeekBarState extends State<SeekBar> {
     if (_dragValue != null && !_dragging) {
       _dragValue = null;
     }
-    return Stack(
-      children: [
-        SliderTheme(
-          data: _sliderThemeData.copyWith(
-            thumbShape: HiddenThumbComponentShape(),
-            activeTrackColor: Colors.blue.shade100,
-            inactiveTrackColor: Colors.grey.shade300,
-          ),
-          child: ExcludeSemantics(
-            child: Slider(
-              min: 0.0,
-              max: widget.duration.inMilliseconds.toDouble(),
-              value: min(widget.bufferedPosition.inMilliseconds.toDouble(),
-                  widget.duration.inMilliseconds.toDouble()),
-              onChanged: (value) {},
-            ),
-          ),
-        ),
-        SliderTheme(
-          data: _sliderThemeData.copyWith(
-            inactiveTrackColor: Colors.transparent,
-          ),
-          child: Slider(
-            min: 0.0,
-            max: widget.duration.inMilliseconds.toDouble(),
-            value: value,
-            onChanged: (value) {
-              if (!_dragging) {
-                _dragging = true;
-              }
-              setState(() {
-                _dragValue = value;
-              });
-              if (widget.onChanged != null) {
-                widget.onChanged!(Duration(milliseconds: value.round()));
-              }
-            },
-            onChangeEnd: (value) {
-              if (widget.onChangeEnd != null) {
-                widget.onChangeEnd!(Duration(milliseconds: value.round()));
-              }
-              _dragging = false;
-            },
-          ),
-        ),
-        Positioned(
-          right: 16.0,
-          bottom: 0.0,
-          child: Text(
+
+    return Padding(
+        padding: EdgeInsets.only(
+            left: kBottomNavigationBarHeight * 0.5,
+            right: kBottomNavigationBarHeight * 0.5),
+        child: Row(children: [
+          Text(
+              RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
+                      .firstMatch("${widget.position}")
+                      ?.group(1) ??
+                  '${widget.position}',
+              style: Theme.of(context).textTheme.caption),
+          Expanded(
+              flex: 10,
+              child: Stack(
+                children: [
+                  SliderTheme(
+                    data: _sliderThemeData.copyWith(
+                      thumbShape: HiddenThumbComponentShape(),
+                      activeTrackColor: Colors.white,
+                      inactiveTrackColor: Colors.grey.shade300,
+                    ),
+                    child: ExcludeSemantics(
+                      child: Slider(
+                        min: 0.0,
+                        max: widget.duration.inMilliseconds.toDouble(),
+                        value: min(
+                            widget.bufferedPosition.inMilliseconds.toDouble(),
+                            widget.duration.inMilliseconds.toDouble()),
+                        onChanged: (value) {},
+                      ),
+                    ),
+                  ),
+                  SliderTheme(
+                    data: _sliderThemeData.copyWith(
+                        inactiveTrackColor: Colors.transparent,
+                        thumbColor: Colors.white,
+                        activeTrackColor: Colors.white12),
+                    child: Slider(
+                      min: 0.0,
+                      max: widget.duration.inMilliseconds.toDouble(),
+                      value: value,
+                      onChanged: (value) {
+                        if (!_dragging) {
+                          _dragging = true;
+                        }
+                        setState(() {
+                          _dragValue = value;
+                        });
+                        if (widget.onChanged != null) {
+                          widget.onChanged!(
+                              Duration(milliseconds: value.round()));
+                        }
+                      },
+                      onChangeEnd: (value) {
+                        if (widget.onChangeEnd != null) {
+                          widget.onChangeEnd!(
+                              Duration(milliseconds: value.round()));
+                        }
+                        _dragging = false;
+                      },
+                    ),
+                  ),
+                ],
+              )),
+          Text(
               RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
                       .firstMatch("$_remaining")
                       ?.group(1) ??
                   '$_remaining',
               style: Theme.of(context).textTheme.caption),
-        ),
-      ],
-    );
+        ]));
   }
 
   Duration get _remaining => widget.duration - widget.position;
@@ -167,7 +182,6 @@ class LoggingAudioHandler extends CompositeAudioHandler {
     });
   }
 
-  // TODO: Use logger. Use different log levels.
   void _log(String s) => print('----- LOG: $s');
 
   @override
@@ -440,7 +454,6 @@ void showSliderDialog({
   required double min,
   required double max,
   String valueSuffix = '',
-  // TODO: Replace these two by ValueStream.
   required double value,
   required Stream<double> stream,
   required ValueChanged<double> onChanged,

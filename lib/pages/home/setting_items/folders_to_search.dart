@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_app/components/bottom_navigation_bar.dart';
 import 'package:getx_app/pages/home/settings_controller.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path/path.dart';
 
 class FolderSelector extends StatelessWidget {
   @override
@@ -18,9 +18,6 @@ class FolderSelector extends StatelessWidget {
               return GetBuilder<SettingsController>(builder: (controller) {
                 return WillPopScope(
                     onWillPop: () async {
-                      if (controller.willPopUp()) {
-                        Navigator.pop(context);
-                      }
                       return false;
                     },
                     child: Scaffold(
@@ -33,27 +30,20 @@ class FolderSelector extends StatelessWidget {
                               itemCount: controller.items.length,
                               itemBuilder: (context, index) {
                                 final path = controller.items[index].path;
+                                final name =
+                                    basename(controller.items[index].path);
                                 return GestureDetector(
                                   onTap: () => controller.addDirectory(path),
                                   child: ListTile(
                                       leading: FutureBuilder(
                                         future: controller.getIcon(path),
-                                        initialData: CupertinoIcons.placemark,
+                                        initialData: CupertinoIcons.app,
                                         builder: (context,
                                                 AsyncSnapshot<IconData> icon) =>
                                             Icon(icon.data),
                                       ),
                                       title: Text(
-                                        path
-                                            .replaceAll(
-                                                controller.initialPath, "")
-                                            .replaceAll(
-                                                controller
-                                                    .items[index > 0
-                                                        ? index - 1
-                                                        : 0]
-                                                    .path,
-                                                ""),
+                                        name,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -73,44 +63,28 @@ class FolderSelector extends StatelessWidget {
                                                             changed!, path);
                                                   },
                                                 )
-                                              : Text("");
+                                              : Text(extension(path));
                                         },
                                       )),
                                 );
                               })),
                       bottomNavigationBar: Container(
-                          decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20))),
                           child: CustomBottomNavigationBar(
-                            onTap: (i) {
-                              if (i == 0) {
-                                if (controller.dd.length == 1) {
-                                  Navigator.pop(context);
-                                }
-                                controller.goBack();
-                              } else if (i == 1) {
-                                Navigator.pop(context);
-                              }
-                            },
-                            items: [
-                              BottomNavigationBarItem(
-                                icon: Icon(CupertinoIcons.chevron_left),
-                              ),
-                              BottomNavigationBarItem(
-                                icon: Icon(CupertinoIcons.chevron_down),
-                              ),
-                            ],
-                          )),
+                        onTap: (i) {
+                          if (controller.dd.length == 1) Navigator.pop(context);
+                          if (i == 0)
+                            controller.goBack();
+                          else if (i == 1) Navigator.pop(context);
+                        },
+                        items: [
+                          BottomNavigationBarItem(
+                            icon: Icon(CupertinoIcons.chevron_left),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Icon(CupertinoIcons.chevron_down),
+                          ),
+                        ],
+                      )),
                     ));
               });
             },

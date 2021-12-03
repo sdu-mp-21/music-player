@@ -1,5 +1,9 @@
-import 'package:get/get_connect.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:getx_app/library/api_request.dart';
+import 'package:getx_app/models/song.dart';
+import 'package:just_audio/just_audio.dart' as J;
+
+typedef OnSuccessFunction = void Function(Song song);
 
 class GeniusAPIResponse {
   List<dynamic> data = [];
@@ -13,41 +17,39 @@ class GeniusAPIResponse {
 }
 
 class GeniusProvider {
-  Map<String, dynamic> getSchema(a, t, s, h) {
-    return {
-      "artistName": a,
-      "thumbnailUrl": t,
-      "songName": s,
-      "headerImage": h
-    };
-  }
+  String query;
+  String path;
+  GeniusProvider({required this.query, required this.path});
 
-  Map<String, dynamic> fromJson(Map<String, dynamic> json) {
-    return getSchema(json['artist_names'], json["header_image_thumbnail_url"],
-        json["full_title"], json['header_image_url']);
-  }
-
-  Map<String, dynamic> fromNullData(String query) {
-    List<String> song = query.split(" - ");
-    return getSchema(
-        song[0],
-        "https://cbdworship.com/assets/images/album_art/placeholder.png",
-        song[1],
-        "https://cbdworship.com/assets/images/album_art/placeholder.png");
-  }
-
-  GeniusProvider(String query, Function cb) {
+  get({required OnSuccessFunction onSuccess}) async {
     ApiRequest(url: "https://api.genius.com/search/", data: {'q': query}).get(
-        onSuccess: (r) {
+        onSuccess: (r) async {
       GeniusAPIResponse response = GeniusAPIResponse(r.data);
-      if (response.hasResults()) {
-        Map<String, dynamic> songData = response.data[0]["result"];
-        cb(fromJson(songData));
-      } else {
-        cb(fromNullData(query));
+      try {
+        final duration = Duration(seconds: 1000);
+
+        if (response.hasResults()) {
+          Map<String, dynamic> songData = response.data[0]["result"];
+          final song = Song.fromJson(songData);
+          song.duration = duration;
+          song.originalPath = path;
+
+          onSuccess(song);
+        } else {
+          final song = Song.fromNull(query);
+          song.duration = duration;
+          song.originalPath = path;
+          onSuccess(song);
+        }
+      } catch (e) {
+        print(e);
       }
     }, onError: (d) {
-      print(d);
+      final duration = Duration(seconds: 1000);
+      final song = Song.fromNull(query);
+      song.duration = duration;
+      song.originalPath = path;
+      onSuccess(song);
     });
   }
 }

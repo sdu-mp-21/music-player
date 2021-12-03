@@ -1,15 +1,11 @@
+// ignore_for_file: close_sinks
+
 import 'package:audio_service/audio_service.dart';
 import 'package:getx_app/globals/cached_music.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:rxdart/src/transformers/where_type.dart';
 import 'dart:async';
-
 import 'package:audio_session/audio_session.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
-import 'media_state.dart' as M;
 
 class QueueState {
   static final QueueState empty =
@@ -52,7 +48,6 @@ abstract class AudioPlayerHandler implements AudioHandler {
 class AudioPlayerHandlerImpl extends BaseAudioHandler
     with SeekHandler
     implements AudioPlayerHandler {
-  // ignore: close_sinks
   final BehaviorSubject<List<MediaItem>> _recentSubject =
       BehaviorSubject.seeded(<MediaItem>[]);
   final _mediaLibrary = MediaLibrary();
@@ -140,6 +135,10 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
     await _player.setVolume(volume);
   }
 
+  int getCurrentIndex() {
+    return _player.currentIndex!;
+  }
+
   AudioPlayerHandlerImpl() {
     _init();
   }
@@ -189,7 +188,11 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
         .pipe(queue);
     // Load the playlist.
     _playlist.addAll(queue.value.map(_itemToSource).toList());
-    await _player.setAudioSource(_playlist);
+    try {
+      await _player.setAudioSource(_playlist);
+    } catch (e) {
+      print("error from start");
+    }
   }
 
   AudioSource _itemToSource(MediaItem mediaItem) {
@@ -247,6 +250,7 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
 
   @override
   Future<void> updateQueue(List<MediaItem> newQueue) async {
+    print("OK");
     await _playlist.clear();
     await _playlist.addAll(_itemsToSources(newQueue));
   }
@@ -346,25 +350,25 @@ class MediaLibrary {
         playable: false,
       ),
     ],
-    albumsRootId: CachedSongs.cachedSongs
-        .map((element) => MediaItem(
-            id: element["originalPath"],
-            album: element["songName"],
-            title: element["artistName"],
-            artist: element["artistName"],
-            duration: Duration(seconds: element["duration"]),
-            artUri: Uri.parse(element["headerImage"])))
-        .toList(),
+    albumsRootId: CachedSongs.cachedSongs.map((element) {
+      return MediaItem(
+          id: element.originalPath!,
+          album: element.title,
+          title: element.artist!,
+          artist: element.artist,
+          duration: element.duration,
+          artUri: Uri.parse(element.headerImage!));
+    }).toList(),
   };
   updateLib() {
     final playlist = CachedSongs.cachedSongs
         .map((element) => MediaItem(
-            id: element["originalPath"],
-            album: element["songName"],
-            title: element["artistName"],
-            artist: element["artistName"],
-            duration: Duration(seconds: element["duration"]),
-            artUri: Uri.parse(element["headerImage"])))
+            id: element.originalPath!,
+            album: element.title,
+            title: element.artist!,
+            artist: element.artist,
+            duration: element.duration,
+            artUri: Uri.parse(element.headerImage!)))
         .toList();
     return <String, List<MediaItem>>{
       AudioService.browsableRootId: const [

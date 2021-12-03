@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 /// On panel status changed
@@ -148,11 +150,11 @@ class _SlidingUpPanelWidgetState extends State<SlidingUpPanelWidget>
 
   late AnimationController _animationController;
 
-  double upperBound = 1.17;
+  double upperBound = 1;
 
   double anchorFraction = 0.5;
 
-  double collapseFraction = 0.17;
+  double collapseFraction = 0.1;
 
   @override
   void initState() {
@@ -227,10 +229,8 @@ class _SlidingUpPanelWidgetState extends State<SlidingUpPanelWidget>
               onVerticalDragDown: _handleDragDown,
               child: Container(
                 key: _childKey,
-                child: Container(
-                  height: double.infinity,
-                  child: widget.child,
-                ),
+                height: window.physicalSize.height,
+                child: widget.child,
               ),
               excludeFromSemantics: true,
             ),

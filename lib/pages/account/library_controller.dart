@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:getx_app/audio_service/audio_player_handler.dart';
 import 'package:getx_app/audio_service/media_state.dart';
 import 'package:getx_app/globals/cached_music.dart';
+import 'package:getx_app/models/song.dart';
 import 'package:getx_app/pages/dashboard/components/music_player.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +21,7 @@ import 'package:audioplayers/audioplayers.dart';
 class LibraryController extends GetxController
     with SingleGetTickerProviderMixin {
   AudioPlayer audioPlayer = AudioPlayer();
+  String searchQuery = "";
 
   ScrollController scrollController = ScrollController();
   PageController pageController = PageController(initialPage: 0);
@@ -40,7 +42,7 @@ class LibraryController extends GetxController
 
   double bottomNavOpacity = 1.0;
 
-  Map<String, dynamic> nowPlaying = {};
+  Song? nowPlaying;
 
   @override
   void onInit() async {
@@ -68,18 +70,40 @@ class LibraryController extends GetxController
     return foundFiles.length;
   }
 
-  Map<String, dynamic> getItem(index) {
-    return foundFiles[index];
+  hasValue(String value) {
+    if (searchQuery.length == 0) {
+      return true;
+    }
+
+    if (value.toLowerCase().contains(searchQuery)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Song? getItem(index) {
+    if (searchQuery.length == 0) {
+      return foundFiles[index];
+    }
+
+    if (foundFiles[index].artist!.toLowerCase().contains(searchQuery) ||
+        foundFiles[index].title!.toLowerCase().contains(searchQuery)) {
+      return foundFiles[index];
+    }
+  }
+
+  handleSearchBar(String value) {
+    searchQuery = value;
+    update();
   }
 
   setPlaying(index) async {
-    await audioHandler
-        .updateQueue(MediaLibrary().updateLib()[MediaLibrary.albumsRootId]);
+    await audioHandler.skipToQueueItem(index);
 
     nowPlaying = foundFiles[index];
 
     update();
-    audioHandler.skipToQueueItem(index);
   }
 
   setOpacity(val) {

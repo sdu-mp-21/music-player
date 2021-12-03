@@ -16,18 +16,18 @@ class MiniPlayBack extends StatelessWidget {
             processingState == AudioProcessingState.buffering) {
           return Container(
             child: IconButton(
-              icon: const Icon(CupertinoIcons.play_arrow),
+              icon: const Icon(Icons.play_circle_fill),
               onPressed: audioHandler.play,
             ),
           );
         } else if (playing != true) {
           return IconButton(
-            icon: const Icon(CupertinoIcons.play_arrow),
+            icon: const Icon(Icons.play_circle_fill),
             onPressed: audioHandler.play,
           );
         } else {
           return IconButton(
-            icon: const Icon(CupertinoIcons.pause),
+            icon: const Icon(CupertinoIcons.pause_circle_fill),
             onPressed: audioHandler.pause,
           );
         }

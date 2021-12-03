@@ -486,7 +486,7 @@ class _BottomNavigationTile extends StatelessWidget {
       onTap: onTap,
       mouseCursor: mouseCursor,
       enableFeedback: true,
-      radius: 75,
+      radius: 70,
       splashFactory: InkRipple.splashFactory,
       child: Padding(
         padding: EdgeInsets.only(top: topPadding, bottom: bottomPadding),
@@ -1084,13 +1084,19 @@ class _Bar extends StatelessWidget {
         ),
       );
     }
-    return Material(
-      elevation: elevation,
-      color: color,
-      borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-      child: alignedChild,
-    );
+    return Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          color: color,
+          boxShadow: [
+            BoxShadow(
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: alignedChild);
   }
 }
 

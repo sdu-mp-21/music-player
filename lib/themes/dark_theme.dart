@@ -6,7 +6,7 @@ ThemeData darkTheme = ThemeData(
   backgroundColor: Colors.black,
   iconTheme: IconThemeData(color: Colors.white),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
-    backgroundColor: Colors.white12,
+    backgroundColor: Colors.black,
     unselectedItemColor: Colors.white,
     selectedItemColor: Colors.white,
     elevation: 0,
