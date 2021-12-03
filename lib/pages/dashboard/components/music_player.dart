@@ -1,12 +1,8 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:getx_app/audio_service/components/mini_control_buttons.dart';
 import 'package:getx_app/audio_service/media_state.dart';
-import 'package:getx_app/globals/cached_music.dart';
-import 'package:getx_app/pages/account/library_controller.dart';
-import 'package:getx_app/components/sliding_up_panel.dart';
 import 'package:getx_app/pages/dashboard/components/music_control.dart';
 import 'package:getx_app/pages/dashboard/components/music_player_controller.dart';
 import 'package:getx_app/pages/dashboard/components/queue_list.dart';
@@ -15,10 +11,10 @@ import 'dart:ui';
 import 'package:getx_app/components/bottom_sheet.dart' as Custom;
 
 class _ModalBottomSheetLayout extends SingleChildLayoutDelegate {
-  _ModalBottomSheetLayout(this.progress, this.isScrollControlled);
+  _ModalBottomSheetLayout(this.progress, this.op);
 
   final double progress;
-  final bool isScrollControlled;
+  final double op;
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
@@ -30,18 +26,11 @@ class _ModalBottomSheetLayout extends SingleChildLayoutDelegate {
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
-    if (0 >
-        size.height -
-            childSize.height * progress -
-            kBottomNavigationBarHeight * 2 -
-            8) {
-      return Offset(0.0, size.height - childSize.height * 1.0);
-    }
     return Offset(
         0.0,
         size.height -
             childSize.height * progress -
-            kBottomNavigationBarHeight * 2 -
+            kBottomNavigationBarHeight * 2 * op -
             8);
   }
 
@@ -144,7 +133,8 @@ class MusicPlayer extends StatelessWidget {
                 child: ClipRect(
                   child: CustomSingleChildLayout(
                     delegate: _ModalBottomSheetLayout(
-                        controller.animationController.value, true),
+                        controller.animationController.value,
+                        controller.opacity),
                     child: child,
                   ),
                 ),

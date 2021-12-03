@@ -67,7 +67,6 @@ class CachedSongs {
 
   _createListeners() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var prev = prefs.getStringList('checked_folders') ?? [];
 
     cachedSongs.listen((p) async {
       prefs.setStringList("found_folders",
@@ -77,12 +76,14 @@ class CachedSongs {
     });
 
     checkedFolders.listen((folders) async {
+      var prev = prefs.getStringList('checked_folders');
+      if (prev == null) prev = [];
       // cachedSongs.removeRange(0, cachedSongs.length);
 
       folders.forEach((path) {
         print(path);
         print(prev);
-        if (!prev.contains(path)) {
+        if (!prev!.contains(path)) {
           if (Directory(path).existsSync()) {
             final subDir = Directory(path).listSync();
 
@@ -93,11 +94,11 @@ class CachedSongs {
           cachedSongs.removeWhere((element) {
             var p = element.originalPath!.split("/");
             p.removeLast();
-            return p.join("/") == prev.firstWhere((element) => element == path);
+            return p.join("/") ==
+                prev!.firstWhere((element) => element == path);
           });
         }
       });
-      prev = folders;
       prefs.setStringList("checked_folders", folders);
     });
   }

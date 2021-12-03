@@ -22,7 +22,7 @@ class MusicPlayerController extends GetxController
       update();
     });
     animationController = AnimationController(
-        duration: Duration(milliseconds: 200),
+        duration: Duration(milliseconds: 400),
         debugLabel: 'SlidingUpPanelWidget',
         vsync: this,
         value: 0);
@@ -30,7 +30,7 @@ class MusicPlayerController extends GetxController
     animation = animationController.drive(
       Tween(begin: Offset(0.0, 1.0), end: Offset.zero).chain(
         CurveTween(
-          curve: Curves.easeInOutBack,
+          curve: Curves.bounceIn,
         ),
       ),
     );

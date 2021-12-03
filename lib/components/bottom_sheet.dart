@@ -395,7 +395,7 @@ class _ModalBottomSheetState<T> extends State<_ModalBottomSheet<T>> {
 
   void handleDragStart(DragStartDetails details) {
     // Allow the bottom sheet to track the user's finger accurately.
-    animationCurve = Curves.easeInSine;
+    animationCurve = Curves.bounceIn;
   }
 
   void handleDragEnd(DragEndDetails details, {bool? isClosing}) {
