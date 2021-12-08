@@ -14,7 +14,6 @@ class LibraryPage extends GetView<LibraryController> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<LibraryController>(builder: (controller) {
-      print(CachedSongs.cachedSongs);
       return GestureDetector(
           onTap: FocusManager.instance.primaryFocus?.unfocus,
           child: Stack(
@@ -28,7 +27,6 @@ class LibraryPage extends GetView<LibraryController> {
                     builder: (context, snapshot) {
                       final queueState = snapshot.data ?? QueueState.empty;
                       final queue = queueState.queue;
-                      print(queue);
 
                       return ReorderableListView(
                         padding: EdgeInsets.only(

@@ -7,6 +7,7 @@ import 'package:getx_app/audio_service/media_state.dart';
 import 'package:getx_app/library/genius_provider.dart';
 import 'package:getx_app/models/song.dart';
 import 'package:getx_app/pages/account/library_controller.dart';
+import 'package:getx_app/pages/home/settings_controller.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart';
@@ -16,6 +17,7 @@ import 'dart:convert';
 class CachedSongs {
   static RxList<Song> cachedSongs = RxList([]);
   static RxList<String> checkedFolders = RxList([]);
+  static bool isLoading = false;
 
   static List watchers = [];
 
@@ -26,9 +28,15 @@ class CachedSongs {
 
       GeniusProvider(path: path, query: fileName).get(onSuccess: (song) {
         cachedSongs.add(song);
-        Get.find<LibraryController>().update();
+        updateAll();
       });
     }
+  }
+
+  updateAll() {
+    isLoading = false;
+    Get.find<LibraryController>().update();
+    Get.find<SettingsController>().update();
   }
 
   init() async {
@@ -36,7 +44,6 @@ class CachedSongs {
     List<String>? songs = prefs.getStringList("found_folders");
     List<String>? folders = prefs.getStringList("checked_folders");
     if (songs != null) {
-      print(songs);
       cachedSongs = RxList<Song>(
           songs.map((e) => Song.fromJson(json.decode(e))).toList());
     }
@@ -76,28 +83,38 @@ class CachedSongs {
     });
 
     checkedFolders.listen((folders) async {
-      var prev = prefs.getStringList('checked_folders');
-      if (prev == null) prev = [];
-      // cachedSongs.removeRange(0, cachedSongs.length);
+      folders = folders.toSet().toList();
+      final prev = prefs.getStringList('checked_folders') ?? [];
+      if (prev.length > 0) {
+        prev.toSet().forEach((e1) {
+          if (!folders.contains(e1)) {
+            cachedSongs.removeWhere((e2) {
+              var p = e2.originalPath!.split("/");
+              p.removeLast();
 
-      folders.forEach((path) {
-        print(path);
-        print(prev);
-        if (!prev!.contains(path)) {
-          if (Directory(path).existsSync()) {
-            final subDir = Directory(path).listSync();
-
-            subDir.forEach((subElement) => _addSong(subElement.path));
+              return prev
+                      .firstWhere((element) => element == p.join("/"),
+                          orElse: () => "")
+                      .length >
+                  0;
+            });
           }
-          _watchDir(path);
-        } else {
-          cachedSongs.removeWhere((element) {
-            var p = element.originalPath!.split("/");
-            p.removeLast();
-            return p.join("/") ==
-                prev!.firstWhere((element) => element == path);
+        });
+      }
+
+      folders.toSet().forEach((path) async {
+        isLoading = true;
+
+        if (Directory(path).existsSync()) {
+          final subDir = Directory(path).listSync();
+
+          subDir.forEach((subElement) {
+            final contains = cachedSongs.where(
+                (Song element) => element.originalPath == subElement.path);
+            if (contains.isEmpty) _addSong(subElement.path);
           });
         }
+        _watchDir(path);
       });
       prefs.setStringList("checked_folders", folders);
     });

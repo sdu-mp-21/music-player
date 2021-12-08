@@ -228,15 +228,12 @@ class _BottomSheetState extends State<BottomSheet> {
     if (details.velocity.pixelsPerSecond.dy > _minFlingVelocity) {
       final double flingVelocity =
           -details.velocity.pixelsPerSecond.dy / _childHeight;
-      print(flingVelocity);
       if (flingVelocity < 0.0) {
         isClosing = true;
       }
     } else if (widget.animationController!.value < _closeProgressThreshold) {
       isClosing = true;
-    } else {
-      print(widget.animationController!.status);
-    }
+    } else {}
 
     widget.animationController!.forward();
 

@@ -72,7 +72,7 @@ class MusicPlayer extends StatelessWidget {
                             color: color,
                             image: DecorationImage(
                               fit: BoxFit.cover,
-                              opacity: 0.9,
+                              opacity: 0.5,
                               image: NetworkImage(
                                 mediaItem != null
                                     ? mediaItem.artUri.toString()

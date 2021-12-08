@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:getx_app/library/api_request.dart';
 import 'package:getx_app/models/song.dart';
@@ -26,7 +28,9 @@ class GeniusProvider {
         onSuccess: (r) async {
       GeniusAPIResponse response = GeniusAPIResponse(r.data);
       try {
-        final duration = Duration(seconds: 1000);
+        final duration = Platform.isIOS
+            ? Duration(seconds: 1000)
+            : await J.AudioPlayer().setUrl(path);
 
         if (response.hasResults()) {
           Map<String, dynamic> songData = response.data[0]["result"];
@@ -45,6 +49,7 @@ class GeniusProvider {
         print(e);
       }
     }, onError: (d) {
+      print(d);
       final duration = Duration(seconds: 1000);
       final song = Song.fromNull(query);
       song.duration = duration;

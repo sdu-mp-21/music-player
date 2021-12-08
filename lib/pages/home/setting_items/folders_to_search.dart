@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_app/components/bottom_navigation_bar.dart';
+import 'package:getx_app/globals/cached_music.dart';
+import 'package:getx_app/globals/settings.dart';
 import 'package:getx_app/pages/home/settings_controller.dart';
 import 'package:path/path.dart';
 
@@ -23,8 +25,20 @@ class FolderSelector extends StatelessWidget {
                     child: Scaffold(
                       appBar: AppBar(
                         title: Text(controller.dd.last),
+                        actions: [
+                          CachedSongs.isLoading
+                              ? Center(
+                                  child: Container(
+                                      width: 16,
+                                      height: 16,
+                                      margin: EdgeInsets.only(right: 30),
+                                      child: CircularProgressIndicator()),
+                                )
+                              : Container()
+                        ],
                       ),
                       body: Container(
+                          color: Theme.of(context).primaryColor,
                           child: ListView.builder(
                               padding: EdgeInsets.all(20),
                               itemCount: controller.items.length,
@@ -58,9 +72,10 @@ class FolderSelector extends StatelessWidget {
                                                       .checkedFolders
                                                       .contains(path),
                                                   onChanged: (changed) {
-                                                    controller
-                                                        .toggleCheckFolder(
-                                                            changed!, path);
+                                                    if (!CachedSongs.isLoading)
+                                                      controller
+                                                          .toggleCheckFolder(
+                                                              changed!, path);
                                                   },
                                                 )
                                               : Text(extension(path));

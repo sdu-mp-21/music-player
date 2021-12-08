@@ -12,9 +12,7 @@ class LibraryProvider {
     ApiRequest(url: 'api.genius.com/search', data: {
       "q": data,
     }).get(
-      onSuccess: (data) {
-        print(data);
-      },
+      onSuccess: (data) {},
       onError: (error) => {if (onError != null) onError(error)},
     );
   }
